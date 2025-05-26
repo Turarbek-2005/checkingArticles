@@ -26,6 +26,8 @@ export default function Checking() {
     mistakes: string[];
     brokenLinks: string[];
     hasReferences: true;
+    imageCount: number,
+    imagesWithCaption: number
   }>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -68,7 +70,7 @@ export default function Checking() {
       const response = await axios.post(
     `${import.meta.env.VITE_BACKEND_URL}/api/check`,
     formData,
-    
+
   );
 
   const data = response.data;
@@ -80,6 +82,8 @@ export default function Checking() {
         mistakes: Array.isArray(data.mistakes) ? data.mistakes : [],
         brokenLinks: Array.isArray(data.brokenLinks) ? data.brokenLinks : [],
         hasReferences: data.hasReferences || false,
+        imageCount: data.imageCount || 0,
+        imagesWithCaption: data.imagesWithCaption || 0,
       });
 
       // Complete the progress bar
@@ -189,7 +193,21 @@ export default function Checking() {
                     Наличие литературы
                   </div>
                   <div className="font-medium text-slate-800">
-                    {result.wordCount ? "Есть" : "Нету"}
+                    {result.hasReferences ? "Есть" : "Нету"}
+                  </div>
+                </div>
+
+                <div className="bg-white p-3 rounded-md border border-slate-200">
+                  <div className="text-sm text-slate-500">Количество рисунков</div>
+                  <div className="font-medium text-slate-800">
+                    {result.imageCount}
+                  </div>
+                </div>
+
+                <div className="bg-white p-3 rounded-md border border-slate-200">
+                  <div className="text-sm text-slate-500">Количество подписанных рисунков</div>
+                  <div className="font-medium text-slate-800">
+                    {result.imagesWithCaption}
                   </div>
                 </div>
               </div>

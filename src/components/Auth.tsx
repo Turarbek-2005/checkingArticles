@@ -9,21 +9,21 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const UserMe = async () => {
-    try {
-      const response = await fetch("/api/user/me", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      console.log("UserMe:", data);
-    } catch (error) {
-      console.log("UserMe Error:", error);
-    }
-  };
+  // const UserMe = async () => {
+  //   try {
+  //     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/me`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //
+  //     const data = await response.json();
+  //     console.log("UserMe:", data);
+  //   } catch (error) {
+  //     console.log("UserMe Error:", error);
+  //   }
+  // };
 
   const SignIn = async () => {
     try {
@@ -45,8 +45,6 @@ const Auth = () => {
       }
     } catch (error) {
       console.log("SignIn Error:", error);
-    } finally {
-      UserMe();
     }
   };
 
@@ -70,8 +68,6 @@ const Auth = () => {
       }
     } catch (error) {
       console.log("SignUp Error:", error);
-    } finally {
-      UserMe();
     }
   };
 
