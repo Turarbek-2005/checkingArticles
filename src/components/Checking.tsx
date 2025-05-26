@@ -1,5 +1,5 @@
 import React from "react";
-
+import axios from "axios"
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, AlertCircle, Link2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { NavLink } from "react-router-dom";
 
 export default function Checking() {
   const [file, setFile] = useState<File | null>(null);
@@ -55,15 +56,22 @@ export default function Checking() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("/api/check", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/check`, {
+      //   method: "POST",
+      //   body: formData,
+      //   // headers: {
+      //   //   "Content-Type": "multipart/form-data",
+      //   // },
+      // });
 
-      const data = await response.json();
+      // const data = await response.json();
+      const response = await axios.post(
+    `${import.meta.env.VITE_BACKEND_URL}/api/check`,
+    formData,
+    
+  );
+
+  const data = response.data;
       // Используем данные из ответа сервера
       setResult({
         font: data.font || "Не определено",
@@ -88,7 +96,9 @@ export default function Checking() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    
+    <div className="relative min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+      <Button className="absolute left-10 top-10"><NavLink to="/auth" className="text-xl">Авторизация</NavLink></Button>
       <Card className="w-full max-w-2xl shadow-lg">
         <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-700 text-white">
           <CardTitle className="text-2xl flex items-center gap-2">

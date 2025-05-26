@@ -27,7 +27,7 @@ const Auth = () => {
 
   const SignIn = async () => {
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ const Auth = () => {
 
   const SignUp = async () => {
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
