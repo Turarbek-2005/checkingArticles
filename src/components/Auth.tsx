@@ -9,7 +9,6 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-<<<<<<< HEAD
   // const UserMe = async () => {
   //   try {
   //     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/me`, {
@@ -18,40 +17,26 @@ const Auth = () => {
   //         "Content-Type": "application/json",
   //       },
   //     });
-  //
+
   //     const data = await response.json();
   //     console.log("UserMe:", data);
   //   } catch (error) {
   //     console.log("UserMe Error:", error);
   //   }
   // };
-=======
-  const UserMe = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      console.log("UserMe:", data);
-    } catch (error) {
-      console.log("UserMe Error:", error);
-    }
-  };
->>>>>>> b024d873a789bf2af467a5e5576b5cd081038c61
 
   const SignIn = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
       console.log("SignIn:", data);
@@ -68,13 +53,16 @@ const Auth = () => {
 
   const SignUp = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, username, password }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, username, password }),
+        }
+      );
 
       const data = await response.json();
       console.log("SignUp:", data);

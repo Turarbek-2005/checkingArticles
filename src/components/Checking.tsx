@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios"
+import axios from "axios";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,20 +16,68 @@ import { Progress } from "@/components/ui/progress";
 import { NavLink } from "react-router-dom";
 
 export default function Checking() {
+  // Пример «заглушки» для result
+  const dummyResult = {
+    mainFont: "Times New Roman",
+    mainFontSize: 14,
+    wordCount: 11633,
+    grammarMistakes: [
+      "питательными",
+      "моделей-кандидатов",
+      "Казахста",
+      "агрорынка",
+      "биоудобрений",
+      "почвогрунтов",
+      "рН",
+      "хеш-таблица",
+      "нанорельеф",
+      "алдын-ала",
+      "суреттер",
+      "аппаратно-программных",
+      // ... (можно добавить ещё ошибок по аналогии)
+    ],
+    brokenUrls: ["https://gis-lab.info/qa/world-soil-maps.html."],
+    imageCount: 35,
+    report: `## Отчет о проверке дипломной работы "Разработка ПО для автоматизации ..."
+  
+1. Наличие списка литературы:
+   - Список присутствует, но оформление нужно доработать.
+
+2. Подписи под изображениями:
+   - Есть, но формат неправилен (дефисы/двоеточия).
+
+3. Орфография и грамматика:
+   - Много ошибок в падежах, окончаниях слов, пунктуации. Требуется редактура.
+
+4. Структура документа:
+   - Присутствуют введение, главы, заключение, но отсутствует нумерация страниц.
+
+5. Логичность изложения:
+   - Переходы между абзацами не плавные, много повторов. Выводы не связаны с задачами во введении.
+
+6. Форматирование:
+   - Разные шрифты и размеры, неоднородные отступы, заголовки.
+
+7. Другие недочеты:
+   - Актуальность источников нужно проверить.
+   - Оформление кода (если есть) — по стандартам.
+  
+Общее впечатление: требуется серьёзная доработка, вычитка и приведение к ГОСТ.`,
+  };
+
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [result, setResult] = useState<null | {
-    font: string;
-    fontSize: number;
-    wordCount: number;
-    mistakes: string[];
-    brokenLinks: string[];
-    hasReferences: true;
-    imageCount: number,
-    imagesWithCaption: number
-  }>(null);
-
+  // const [result, setResult] = useState<null | {
+  //   mainFont: string;
+  //   mainFontSize: number;
+  //   wordCount: number;
+  //   grammarMistakes: string[];
+  //   brokenUrls: string[];
+  //   imageCount: number;
+  //   report: string;
+  // }>(null);
+  const [result, setResult] = useState<typeof dummyResult>(dummyResult);
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -43,7 +91,7 @@ export default function Checking() {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
+    // Имитация прогресса загрузки
     const progressInterval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 95) {
@@ -58,35 +106,25 @@ export default function Checking() {
     formData.append("file", file);
 
     try {
-      // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/check`, {
-      //   method: "POST",
-      //   body: formData,
-      //   // headers: {
-      //   //   "Content-Type": "multipart/form-data",
-      //   // },
-      // });
-
-      // const data = await response.json();
       const response = await axios.post(
-    `${import.meta.env.VITE_BACKEND_URL}/api/check`,
-    formData,
+        `${import.meta.env.VITE_BACKEND_URL}/api/check`,
+        formData
+      );
 
-  );
-
-  const data = response.data;
-      // Используем данные из ответа сервера
+      const data = response.data;
       setResult({
-        font: data.font || "Не определено",
-        fontSize: data.fontSize || 0,
+        mainFont: data.mainFont || "Не определено",
+        mainFontSize: data.mainFontSize || 0,
         wordCount: data.wordCount || 0,
-        mistakes: Array.isArray(data.mistakes) ? data.mistakes : [],
-        brokenLinks: Array.isArray(data.brokenLinks) ? data.brokenLinks : [],
-        hasReferences: data.hasReferences || false,
+        grammarMistakes: Array.isArray(data.grammarMistakes)
+          ? data.grammarMistakes
+          : [],
+        brokenUrls: Array.isArray(data.brokenUrls) ? data.brokenUrls : [],
         imageCount: data.imageCount || 0,
-        imagesWithCaption: data.imagesWithCaption || 0,
+        report: data.report || "",
       });
 
-      // Complete the progress bar
+      // Полностью заполняем прогресс-бар
       setUploadProgress(100);
       setTimeout(() => {
         setIsUploading(false);
@@ -100,9 +138,12 @@ export default function Checking() {
   }
 
   return (
-    
     <div className="relative min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <Button className="absolute left-10 top-10"><NavLink to="/auth" className="text-xl">Авторизация</NavLink></Button>
+      <Button className="absolute left-10 top-10">
+        <NavLink to="/auth" className="text-xl">
+          Авторизация
+        </NavLink>
+      </Button>
       <Card className="w-full max-w-2xl shadow-lg">
         <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-700 text-white">
           <CardTitle className="text-2xl flex items-center gap-2">
@@ -162,7 +203,7 @@ export default function Checking() {
           </Button>
 
           {result ? (
-            <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+            <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 max-h-[70vh] overflow-y-auto">
               <h3 className="text-xl font-bold text-slate-800 mb-4">
                 Результаты анализа:
               </h3>
@@ -171,14 +212,14 @@ export default function Checking() {
                 <div className="bg-white p-3 rounded-md border border-slate-200">
                   <div className="text-sm text-slate-500">Шрифт</div>
                   <div className="font-medium text-slate-800">
-                    {result.font}
+                    {result.mainFont}
                   </div>
                 </div>
 
                 <div className="bg-white p-3 rounded-md border border-slate-200">
                   <div className="text-sm text-slate-500">Размер шрифта</div>
                   <div className="font-medium text-slate-800">
-                    {result.fontSize} pt
+                    {result.mainFontSize} pt
                   </div>
                 </div>
 
@@ -188,26 +229,13 @@ export default function Checking() {
                     {result.wordCount}
                   </div>
                 </div>
+
                 <div className="bg-white p-3 rounded-md border border-slate-200">
                   <div className="text-sm text-slate-500">
-                    Наличие литературы
+                    Количество рисунков
                   </div>
-                  <div className="font-medium text-slate-800">
-                    {result.hasReferences ? "Есть" : "Нету"}
-                  </div>
-                </div>
-
-                <div className="bg-white p-3 rounded-md border border-slate-200">
-                  <div className="text-sm text-slate-500">Количество рисунков</div>
                   <div className="font-medium text-slate-800">
                     {result.imageCount}
-                  </div>
-                </div>
-
-                <div className="bg-white p-3 rounded-md border border-slate-200">
-                  <div className="text-sm text-slate-500">Количество подписанных рисунков</div>
-                  <div className="font-medium text-slate-800">
-                    {result.imagesWithCaption}
                   </div>
                 </div>
               </div>
@@ -218,9 +246,9 @@ export default function Checking() {
                   <h4 className="font-medium text-slate-800">Ошибки:</h4>
                 </div>
 
-                {result.mistakes.length > 0 ? (
+                {result.grammarMistakes.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
-                    {result.mistakes.map((mistake, index) => (
+                    {result.grammarMistakes.map((mistake, index) => (
                       <Badge
                         key={index}
                         variant="outline"
@@ -235,7 +263,7 @@ export default function Checking() {
                 )}
               </div>
 
-              <div>
+              <div className="mb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Link2 className="h-4 w-4 text-red-500" />
                   <h4 className="font-medium text-slate-800">
@@ -243,9 +271,9 @@ export default function Checking() {
                   </h4>
                 </div>
 
-                {result.brokenLinks.length > 0 ? (
+                {result.brokenUrls.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
-                    {result.brokenLinks.map((link, index) => (
+                    {result.brokenUrls.map((link, index) => (
                       <Badge
                         key={index}
                         variant="outline"
@@ -261,6 +289,15 @@ export default function Checking() {
                   </p>
                 )}
               </div>
+
+              {result.report && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-slate-800 mb-2">Отчет:</h4>
+                  <pre className="whitespace-pre-wrap text-sm text-slate-700">
+                    {result.report}
+                  </pre>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center text-slate-500 py-4">
