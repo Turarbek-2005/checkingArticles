@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState } from "react";
+import jsPDF from "jspdf";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,10 +12,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileText, AlertCircle, Link2 } from "lucide-react";
+import { Upload, FileText, AlertCircle, Link2, Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { NavLink } from "react-router-dom";
-
+import { TimesNewRoman } from "@/fonts/TimesNewRoman";
 export default function Checking() {
   // Пример «заглушки» для result
   const dummyResult = {
@@ -136,7 +137,31 @@ export default function Checking() {
       clearInterval(progressInterval);
     }
   }
+  function downloadReport() {
+    if (!result || !result.report) return;
 
+    // Создаем документ и регистрируем шрифт
+    const doc = new jsPDF();
+    (doc as any).addFileToVFS("TimesNewRoman.ttf", TimesNewRoman);
+    (doc as any).addFont("TimesNewRoman.ttf", "TimesNewRoman", "normal");
+    doc.setFont("TimesNewRoman");
+    doc.setFontSize(12);
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 10;
+    const maxLineWidth = pageWidth - margin * 2;
+    const lines = doc.splitTextToSize(result.report, maxLineWidth);
+    let y = margin;
+    lines.forEach((line) => {
+      if (y > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        y = margin;
+      }
+      doc.text(line, margin, y);
+      y += 7; // межстрочный интервал
+    });
+    doc.save("report.pdf");
+  }
   return (
     <div className="relative min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <Button className="absolute left-10 top-10">
@@ -296,6 +321,9 @@ export default function Checking() {
                   <pre className="whitespace-pre-wrap text-sm text-slate-700">
                     {result.report}
                   </pre>
+                  <Button onClick={downloadReport} className="mt-4">
+                    <Download className="mr-2 h-4 w-4" /> Скачать отчет PDF
+                  </Button>
                 </div>
               )}
             </div>
